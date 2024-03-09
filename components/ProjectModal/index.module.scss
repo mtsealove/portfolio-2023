@@ -1,0 +1,43 @@
+.section {
+  font-size: 16px;
+  line-height: 24px;
+  color: rgba(0, 0, 0, 0.8);
+  font-weight: 500;
+  img {
+    max-width: 100%;
+  }
+  ul {
+    padding-left: 20px;
+    color: rgba(0, 0, 0, 0.7);
+  }
+  h2 {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 4px;
+  }
+  a {
+    color: #2b6cb0;
+  }
+}
+
+.thumbnail {
+  transition: transform 200ms;
+  &:hover {
+    transform: translateY(-8px);
+  }
+}
+
+.progress {
+  margin-top: 52px;
+  top: 52px;
+  @media (max-width: 768px) {
+    margin-top: 64px;
+    top: 64px;
+  }
+}
+
+.container {
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
