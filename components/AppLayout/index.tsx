@@ -5,6 +5,7 @@ import Header from '@/components/Header';
 import Providers from '@/components/Providiers';
 import { useRouter } from 'next/router';
 import { QueryClient, QueryClientProvider } from 'react-query';
+import { Analytics } from '@vercel/analytics/react';
 import CookieManager from '@/Libs/CookieManager';
 import AuthApi from '@/API/AuthApi';
 import UserContext, { UserContextProps } from '@/context/UserContext';
@@ -59,6 +60,7 @@ const AppLayout = ({ children }:Props) => {
                     {headerVisible && (
                         <Header />
                     )}
+                    <Analytics/>
                 </QueryClientProvider>
             </UserContext.Provider>
         </Providers>
