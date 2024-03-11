@@ -23,7 +23,7 @@ import styles from './index.module.scss';
 
 const ProjectModal = () => {
   const scrollRef = useRef<HTMLDivElement>(null);
-  const isVisible = useRecoilValue<boolean>(modalVisible);
+  const [isVisible, setIsVisible] = useRecoilState<boolean>(modalVisible);
   const [progress, setProgress] = useState<number>(0);
   const pid = useRecoilValue(projectId);
   const { data: project } = useQuery(['project', pid], async () => (await ProjectApi.getProject(pid)).data, {
@@ -60,6 +60,10 @@ const ProjectModal = () => {
   const currentIdx = useMemo<number>(() => images.indexOf(currentImg) + 1, [currentImg, images]);
   useEffect(() => {
     scrollRef.current?.scrollTo({ top: 0, behavior: 'instant' });
+    const timeout = setTimeout(() => {
+      setProgress(0);
+    }, 100);
+    return () => clearTimeout(timeout);
   }, [pid]);
   return (
         <Box w='100vw'

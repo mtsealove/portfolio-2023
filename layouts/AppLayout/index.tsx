@@ -9,6 +9,8 @@ import { Analytics } from '@vercel/analytics/react';
 import CookieManager from '@/Libs/CookieManager';
 import AuthApi from '@/API/AuthApi';
 import UserContext, { UserContextProps } from '@/context/UserContext';
+import { useRecoilState } from 'recoil';
+import { modalVisible, projectId } from '@/context/RecoilState';
 import styles from './index.module.scss';
 
 interface Props {
@@ -22,6 +24,8 @@ const AppLayout = ({ children }:Props) => {
     [router.pathname],
   );
   const queryClient = new QueryClient();
+  const [mVisible, setMVisible] = useRecoilState<boolean>(modalVisible);
+  const [pid, setPid] = useRecoilState<number>(projectId);
   const [user, setUser] = useState<User|undefined>(undefined);
   const userContextValue = useMemo<UserContextProps>(() => ({
     user,
@@ -49,6 +53,22 @@ const AppLayout = ({ children }:Props) => {
     window.addEventListener('resize', onResize);
     return () => window.removeEventListener('resize', onResize);
   }, []);
+  useEffect(() => {
+    if (pid !== -1) {
+      router.push({ pathname: '/', query: { projectId: pid } });
+    } else {
+      router.replace('/');
+    }
+  }, [pid]);
+  useEffect(() => {
+    const n = Number(router.query.projectId);
+    if (!Number.isNaN(n) && n !== -1) {
+      setPid(n);
+      setMVisible(true);
+    } else {
+      setPid(-1);
+    }
+  }, [router.query]);
   return (
         <Providers>
             <UserContext.Provider value={userContextValue}>

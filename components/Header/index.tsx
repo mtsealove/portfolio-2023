@@ -5,14 +5,15 @@ import { IoIosMenu, IoMdArrowBack } from 'react-icons/io';
 import { IoCloseOutline } from 'react-icons/io5';
 import { useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/router';
-import { useRecoilState } from 'recoil';
-import { modalVisible } from '@/context/RecoilState';
+import { useRecoilState, useSetRecoilState } from 'recoil';
+import { modalVisible, projectId } from '@/context/RecoilState';
 
 const Header = () => {
   const router = useRouter();
   const [isWhite, setIsWhite] = useState<boolean>(false);
   const [expand, setExpand] = useState<boolean>(false);
   const [isProjectShow, setIsProjectShow] = useRecoilState<boolean>(modalVisible);
+  const setProjectId = useSetRecoilState(projectId);
   const moveToTop = () => {
     if (isProjectShow) {
       setIsProjectShow(false);
@@ -86,7 +87,13 @@ const Header = () => {
                                     w='28px'
                                     h='28px'
                                     cursor='pointer'
-                                    onClick={() => router.back()}
+                                    onClick={() => {
+                                      setIsProjectShow(false);
+                                      const timeout = setTimeout(() => {
+                                        setProjectId(-1);
+                                      }, 500);
+                                      return () => clearTimeout(timeout);
+                                    }}
               />) : (
                   <Text {... textOptions}
                         onClick={moveToTop}>

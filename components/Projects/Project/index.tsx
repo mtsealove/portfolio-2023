@@ -3,7 +3,7 @@ import {
 } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
-import { useRecoilState } from 'recoil';
+import { useRecoilState, useSetRecoilState } from 'recoil';
 import { modalVisible, projectId } from '@/context/RecoilState';
 
 interface Props {
@@ -13,15 +13,15 @@ interface Props {
 
 const Project = ({ project, isAdmin }:Props) => {
   const { title, thumbnail, summary } = project;
+  const setProjectId = useSetRecoilState(projectId);
+  const setModalVisible = useSetRecoilState(modalVisible);
   const router = useRouter();
   const [hover, setHover] = useState<boolean>(false);
   const onClick = () => {
     if (!isAdmin) {
-      // router.push({ pathname: `/projects/${project.id}` });
-      // setProjectId(project.id);
-      // setModalVisible(true);
-      router.push({ pathname: '/', query: { projectId: project.id } });
-      // window.history.pushState({projectId: project.id}, null, '/');
+      // router.push({ pathname: '/', query: { projectId: project.id } });
+      setProjectId(project.id);
+      setModalVisible(true);
     } else {
       router.push({ pathname: '/admin/edit', query: { id: project.id } });
     }
