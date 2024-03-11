@@ -64,6 +64,11 @@ const Header = () => {
     cursor: 'pointer',
     transition: '200ms',
   }), [color]);
+  useEffect(() => {
+    if (router.query.projectId) {
+      setIsWhite(true);
+    }
+  }, [router.query]);
   return (
         <Flex
               px={4}
