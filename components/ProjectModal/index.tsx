@@ -11,7 +11,7 @@ import {
   useDisclosure,
 } from '@chakra-ui/react';
 import { useRecoilState, useRecoilValue } from 'recoil';
-import { modalVisible, prevPage, projectId } from '@/context/RecoilState';
+import { modalVisible, projectId } from '@/context/RecoilState';
 import {
   useEffect, useMemo, useRef, useState,
 } from 'react';
@@ -37,7 +37,6 @@ const ProjectModal = () => {
   }, [project]);
   const [currentImg, setCurrentImg] = useState<string>('');
   const { onOpen, onClose, isOpen } = useDisclosure();
-  const [_, setPrevPage] = useRecoilState<string>(prevPage);
   const prevEnable = useMemo<boolean>(
     () => images.indexOf(currentImg) !== 0,
     [images, currentImg],
