@@ -3,20 +3,22 @@ import {
 } from '@chakra-ui/react';
 import { IoIosMenu, IoMdArrowBack } from 'react-icons/io';
 import { IoCloseOutline } from 'react-icons/io5';
-import { useEffect, useMemo, useState } from 'react';
+import {
+  useContext, useEffect, useMemo, useState,
+} from 'react';
 import { useRouter } from 'next/router';
 import { useRecoilState, useSetRecoilState } from 'recoil';
-import { modalVisible, projectId } from '@/context/RecoilState';
+import ProjectContext from '@/context/ProjectContext';
+// import { modalVisible, projectId } from '@/context/RecoilState';
 
 const Header = () => {
   const router = useRouter();
   const [isWhite, setIsWhite] = useState<boolean>(false);
   const [expand, setExpand] = useState<boolean>(false);
-  const [isProjectShow, setIsProjectShow] = useRecoilState<boolean>(modalVisible);
-  const setProjectId = useSetRecoilState(projectId);
+  const { setProjectId, modalVisible, setModalVisible } = useContext(ProjectContext);
   const moveToTop = () => {
-    if (isProjectShow) {
-      setIsProjectShow(false);
+    if (modalVisible) {
+      setModalVisible?.(false);
     } else {
       const main = document.querySelector<HTMLDivElement>('#main');
       main?.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
@@ -26,7 +28,7 @@ const Header = () => {
     setExpand(false);
     const main = document.querySelector<HTMLDivElement>('#main');
     const component = document.querySelector<HTMLDivElement>(`#${id}`);
-    setIsProjectShow(false);
+    setModalVisible?.(false);
     if (component) {
       main?.scrollTo({ top: component.offsetTop, left: 0, behavior: 'smooth' });
     }
@@ -83,14 +85,14 @@ const Header = () => {
                   w='100%'
                   justify='space-between'
                   alignItems='center' >
-              {isProjectShow ? (<Icon as={IoMdArrowBack}
+              {modalVisible ? (<Icon as={IoMdArrowBack}
                                     w='28px'
                                     h='28px'
                                     cursor='pointer'
                                     onClick={() => {
-                                      setIsProjectShow(false);
+                                      setModalVisible?.(false);
                                       const timeout = setTimeout(() => {
-                                        setProjectId(-1);
+                                        setProjectId?.(-1);
                                       }, 500);
                                       return () => clearTimeout(timeout);
                                     }}

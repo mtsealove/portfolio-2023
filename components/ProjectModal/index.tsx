@@ -11,23 +11,23 @@ import {
   useDisclosure,
 } from '@chakra-ui/react';
 import { useRecoilState, useRecoilValue } from 'recoil';
-import { modalVisible, projectId } from '@/context/RecoilState';
 import {
+  useContext,
   useEffect, useMemo, useRef, useState,
 } from 'react';
 import { useQuery } from 'react-query';
 import ProjectApi from '@/API/ProjectApi';
 import dayjs from 'dayjs';
 import { GrNext, GrPrevious } from 'react-icons/gr';
+import ProjectContext from '@/context/ProjectContext';
 import styles from './index.module.scss';
 
 const ProjectModal = () => {
   const scrollRef = useRef<HTMLDivElement>(null);
-  const [isVisible, setIsVisible] = useRecoilState<boolean>(modalVisible);
+  const { projectId, modalVisible, setModalVisible } = useContext(ProjectContext);
   const [progress, setProgress] = useState<number>(0);
-  const pid = useRecoilValue(projectId);
-  const { data: project } = useQuery(['project', pid], async () => (await ProjectApi.getProject(pid)).data, {
-    enabled: pid !== -1,
+  const { data: project } = useQuery(['project', projectId], async () => (await ProjectApi.getProject(Number(projectId))).data, {
+    enabled: projectId !== -1,
   });
   const images = useMemo<string[]>(() => {
     if (project) {
@@ -64,7 +64,7 @@ const ProjectModal = () => {
       setProgress(0);
     }, 100);
     return () => clearTimeout(timeout);
-  }, [pid]);
+  }, [projectId]);
   return (
         <Box w='100vw'
              h='100vh'
@@ -74,7 +74,7 @@ const ProjectModal = () => {
              backgroundColor='white'
              transition='transform 500ms ease-in'
              overflowY='scroll'
-             transform={isVisible ? 'none' : 'translateX(100vw)'}
+             transform={modalVisible ? 'none' : 'translateX(100vw)'}
              zIndex={2}
              ref={scrollRef}
              onScroll={(e) => {

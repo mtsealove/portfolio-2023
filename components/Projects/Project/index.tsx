@@ -2,9 +2,8 @@ import {
   AspectRatio, Box, Card, CardBody, Flex, Image, Text,
 } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
-import { useState } from 'react';
-import { useRecoilState, useSetRecoilState } from 'recoil';
-import { modalVisible, projectId } from '@/context/RecoilState';
+import { useContext, useState } from 'react';
+import ProjectContext from '@/context/ProjectContext';
 
 interface Props {
     project: Project;
@@ -13,15 +12,14 @@ interface Props {
 
 const Project = ({ project, isAdmin }:Props) => {
   const { title, thumbnail, summary } = project;
-  const setProjectId = useSetRecoilState(projectId);
-  const setModalVisible = useSetRecoilState(modalVisible);
+  const { setProjectId, setModalVisible } = useContext(ProjectContext);
   const router = useRouter();
   const [hover, setHover] = useState<boolean>(false);
   const onClick = () => {
     if (!isAdmin) {
       // router.push({ pathname: '/', query: { projectId: project.id } });
-      setProjectId(project.id);
-      setModalVisible(true);
+      setProjectId?.(project.id);
+      setModalVisible?.(true);
     } else {
       router.push({ pathname: '/admin/edit', query: { id: project.id } });
     }

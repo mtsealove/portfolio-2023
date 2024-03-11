@@ -9,8 +9,7 @@ import { Analytics } from '@vercel/analytics/react';
 import CookieManager from '@/Libs/CookieManager';
 import AuthApi from '@/API/AuthApi';
 import UserContext, { UserContextProps } from '@/context/UserContext';
-import { useRecoilState } from 'recoil';
-import { modalVisible, projectId } from '@/context/RecoilState';
+import ProjectContext, { ProjectContextProps } from '@/context/ProjectContext';
 import styles from './index.module.scss';
 
 interface Props {
@@ -24,13 +23,16 @@ const AppLayout = ({ children }:Props) => {
     [router.pathname],
   );
   const queryClient = new QueryClient();
-  const [mVisible, setMVisible] = useRecoilState<boolean>(modalVisible);
-  const [pid, setPid] = useRecoilState<number>(projectId);
   const [user, setUser] = useState<User|undefined>(undefined);
+  const [modalVisible, setModalVisible] = useState<boolean>(false);
+  const [projectId, setProjectId] = useState<number>(-1);
   const userContextValue = useMemo<UserContextProps>(() => ({
     user,
     setUser,
   }), [user]);
+  const projectContextValue = useMemo<ProjectContextProps>(() => ({
+    projectId, setProjectId, modalVisible, setModalVisible,
+  }), [modalVisible, projectId]);
   useEffect(() => {
     // https 사용 강제
     if (process.env.NEXT_PUBLIC_ENV === 'production' && !window.location.href.startsWith('https://')) {
@@ -54,34 +56,39 @@ const AppLayout = ({ children }:Props) => {
     return () => window.removeEventListener('resize', onResize);
   }, []);
   useEffect(() => {
-    if (pid !== -1) {
-      router.push({ pathname: '/', query: { projectId: pid } });
+    if (projectId !== -1) {
+      router.push({ pathname: '/', query: { projectId } });
     } else {
-      router.replace('/');
+      router.push('/');
     }
-  }, [pid]);
+  }, [projectId]);
   useEffect(() => {
     const n = Number(router.query.projectId);
     if (!Number.isNaN(n) && n !== -1) {
-      setPid(n);
-      setMVisible(true);
+      setProjectId(n);
+      setModalVisible(true);
     } else {
-      setPid(-1);
+      setProjectId(-1);
+      setModalVisible(false);
     }
   }, [router.query]);
+
   return (
         <Providers>
             <UserContext.Provider value={userContextValue}>
+              <ProjectContext.Provider value={projectContextValue}>
                 <QueryClientProvider client={queryClient}>
-                    <main className={styles.main}
-                          id='main'>
-                        {children}
-                    </main>
-                    {headerVisible && (
-                        <Header />
-                    )}
-                    <Analytics/>
+                  <main className={styles.main}
+                        id='main'>
+                    {children}
+                  </main>
+                  {headerVisible && (
+                      <Header />
+                  )}
+                  <Analytics/>
                 </QueryClientProvider>
+              </ProjectContext.Provider>
+
             </UserContext.Provider>
         </Providers>
   );
