@@ -10,7 +10,6 @@ import {
   Text,
   useDisclosure,
 } from '@chakra-ui/react';
-import { useRecoilState, useRecoilValue } from 'recoil';
 import {
   useContext,
   useEffect, useMemo, useRef, useState,

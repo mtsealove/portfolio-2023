@@ -7,7 +7,6 @@ import {
   useContext, useEffect, useMemo, useState,
 } from 'react';
 import { useRouter } from 'next/router';
-import { useRecoilState, useSetRecoilState } from 'recoil';
 import ProjectContext from '@/context/ProjectContext';
 // import { modalVisible, projectId } from '@/context/RecoilState';
 
