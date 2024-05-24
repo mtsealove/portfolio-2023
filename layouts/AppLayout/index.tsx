@@ -56,12 +56,14 @@ const AppLayout = ({ children }:Props) => {
     return () => window.removeEventListener('resize', onResize);
   }, []);
   useEffect(() => {
-    if (projectId !== -1) {
-      router.push({ pathname: '/', query: { projectId } });
-    } else {
-      router.push('/');
+    if (router.pathname === '/') {
+      if (projectId !== -1) {
+        router.push({ pathname: '/', query: { projectId } });
+      } else {
+        router.push('/');
+      }
     }
-  }, [projectId]);
+  }, [projectId, router.pathname]);
   useEffect(() => {
     const n = Number(router.query.projectId);
     if (!Number.isNaN(n) && n !== -1) {
@@ -85,7 +87,7 @@ const AppLayout = ({ children }:Props) => {
                   {headerVisible && (
                       <Header />
                   )}
-                  <Analytics/>
+                   <Analytics/>
                 </QueryClientProvider>
               </ProjectContext.Provider>
 
